@@ -1,19 +1,29 @@
 "use client";
 
 import React, { Suspense } from "react";
-import CategoryList from "./_components/categoryList";
-import RestaurantList from "./_components/RestaurantList";
+import dynamic from "next/dynamic";
 
-// ✅ مهم جدًا عشان يمنع الـ prerender اللي عامل المشكلة
+const CategoryList = dynamic(() => import("./_components/categoryList"), {
+  ssr: false,
+});
+const RestaurantList = dynamic(() => import("./_components/RestaurantList"), {
+  ssr: false,
+});
+
+// 🔥 دا بيمنع Vercel من محاولة عمل prerender للصفحة
 export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
 
 export default function Home() {
   return (
     <div className="container p-7">
-      <Suspense fallback={<p>Loading...</p>}>
+      <Suspense fallback={<p>Loading categories...</p>}>
         <CategoryList />
       </Suspense>
-      <RestaurantList />
+
+      <Suspense fallback={<p>Loading restaurants...</p>}>
+        <RestaurantList />
+      </Suspense>
     </div>
   );
 }
