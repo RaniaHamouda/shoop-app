@@ -1,8 +1,10 @@
+"use client";
+
+import React, { Suspense } from "react";
 import CategoryList from "./_components/categoryList";
 import RestaurantList from "./_components/RestaurantList";
-import React, { Suspense } from "react";
 
-// ✅ السطر ده هو المفتاح — بيمنع الـ prerender وبيخلي الصفحة ديناميكية
+// ✅ مهم جدًا عشان يمنع الـ prerender اللي عامل المشكلة
 export const dynamic = "force-dynamic";
 
 export default function Home() {

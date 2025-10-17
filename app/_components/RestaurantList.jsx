@@ -1,8 +1,9 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, Suspense } from "react";
 import GlobalApi from "../_utils/GlobalApi";
 import { useSearchParams } from "next/navigation";
 import RestaurantCard from "./RestaurantCard";
+
 import { UpdateCartContext } from "./_context/UpdateCartContext";
 
 function RestaurantList() {
@@ -51,4 +52,11 @@ function RestaurantList() {
   );
 }
 
-export default RestaurantList;
+// export default RestaurantList;
+export default function RestaurantList() {
+  return (
+    <Suspense fallback={<div>Loading restaurants ...</div>}>
+      <CategoryContent />
+    </Suspense>
+  );
+}
