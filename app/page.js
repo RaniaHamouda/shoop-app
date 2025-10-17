@@ -3,6 +3,7 @@
 import React, { Suspense } from "react";
 import dynamic from "next/dynamic";
 
+// نمنع الـ SSR علشان useSearchParams() تشتغل كويس
 const CategoryList = dynamic(() => import("./_components/categoryList"), {
   ssr: false,
 });
@@ -10,9 +11,9 @@ const RestaurantList = dynamic(() => import("./_components/RestaurantList"), {
   ssr: false,
 });
 
-// 🔥 دا بيمنع Vercel من محاولة عمل prerender للصفحة
+// ✅ أضف السطرين دول تحت imports دايمًا
 export const dynamic = "force-dynamic";
-export const fetchCache = "force-no-store";
+export const revalidate = 0;
 
 export default function Home() {
   return (
