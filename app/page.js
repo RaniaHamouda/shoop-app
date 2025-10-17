@@ -1,18 +1,17 @@
-import CategoryList from "./_components/categoryList";
 import React, { Suspense } from "react";
+import CategoryList from "./_components/categoryList";
 import RestaurantList from "./_components/RestaurantList";
 
 export default function Home() {
   return (
     <div className="container p-7">
-      <Suspense
-        fallback={
-          <p className="text-center text-gray-500">Loading categories...</p>
-        }
-      >
+      <Suspense fallback={<div>Loading categories...</div>}>
         <CategoryList />
       </Suspense>
-      <RestaurantList />
+
+      <Suspense fallback={<div>Loading restaurants...</div>}>
+        <RestaurantList />
+      </Suspense>
     </div>
   );
 }
