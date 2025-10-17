@@ -1,17 +1,17 @@
-import React, { Suspense } from "react";
 import CategoryList from "./_components/categoryList";
 import RestaurantList from "./_components/RestaurantList";
+import React, { Suspense } from "react";
+
+// ✅ السطر ده هو المفتاح — بيمنع الـ prerender وبيخلي الصفحة ديناميكية
+export const dynamic = "force-dynamic";
 
 export default function Home() {
   return (
     <div className="container p-7">
-      <Suspense fallback={<div>Loading categories...</div>}>
+      <Suspense fallback={<p>Loading...</p>}>
         <CategoryList />
       </Suspense>
-
-      <Suspense fallback={<div>Loading restaurants...</div>}>
-        <RestaurantList />
-      </Suspense>
+      <RestaurantList />
     </div>
   );
 }
