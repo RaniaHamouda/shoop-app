@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Header from "./_components/Header";
 import { Toaster } from "@/components/ui/sonner";
+
 import { UpdateCartContext } from "./_components/_context/UpdateCartContext";
 
 export const Provider = ({ children }) => {
