@@ -267,129 +267,129 @@ export const getReviews = async (restaurantSlug) => {
   return result;
 };
 
-// export const createNewOrder = async (orderData, itemsList) => {
-//   const mutation = gql`
-//     mutation {
-//       createOrder(
-//         data: {
-//           userName: "${orderData.userName}"
-//           email: "${orderData.email}"
-//           orderAmount: ${parseFloat(orderData.orderAmount)}
-//           address: "${orderData.address}"
-//           zipCode: ${orderData.zipCode}
-//           phone: "${orderData.phone}"
-//           orderitems: {
-//             create: [
-//               ${itemsList
-//                 .map(
-//                   (item) => `{
-//                     Orderdetails: {
-//                       name: "${item.name}",
-//                       price: ${parseFloat(item.price)}
-//                     }
-//                   }`
-//                 )
-//                 .join(",")}
-//             ]
-//           }
-//         }
-//       ) {
-//         id
-//         userName
-//         email
-//         orderAmount
-//         address
-//         zipCode
-//         phone
-//         orderitems {
-//           ... on Orderdetails {
-//             id
-//             name
-//             price
-//           }
-//         }
-//       }
-
-//       # ✅ بعد الإنشاء مباشرة انشر الطلب (publish)
-//       publishManyOrders(to: PUBLISHED) {
-//         count
-//       }
-
-//       # ✅ ونشر المنتجات اللي داخله (orderitems)
-//       publishManyOrderitems(to: PUBLISHED) {
-//         count
-//       }
-
-//       # ✅ ونشر التفاصيل كمان
-//       publishManyOrderdetails(to: PUBLISHED) {
-//         count
-//       }
-//     }
-//   `;
-// };
-
 export const createNewOrder = async (orderData, itemsList) => {
-  // ✅ 1. أولًا: إنشاء الطلب
-  const createMutation = gql`
-    mutation CreateOrder($data: OrderCreateInput!) {
-      createOrder(data: $data) {
+  const mutation = gql`
+    mutation {
+      createOrder(
+        data: {
+          userName: "${orderData.userName}"
+          email: "${orderData.email}"
+          orderAmount: ${parseFloat(orderData.orderAmount)}
+          address: "${orderData.address}"
+          zipCode: ${orderData.zipCode}
+          phone: "${orderData.phone}"
+          orderitems: {
+            create: [
+              ${itemsList
+                .map(
+                  (item) => `{
+                    Orderdetails: {
+                      name: "${item.name}",
+                      price: ${parseFloat(item.price)}
+                    }
+                  }`
+                )
+                .join(",")}
+            ]
+          }
+        }
+      ) {
         id
+        userName
+        email
+        orderAmount
+        address
+        zipCode
+        phone
+        orderitems {
+          ... on Orderdetails {
+            id
+            name
+            price
+          }
+        }
+      }
+
+      # ✅ بعد الإنشاء مباشرة انشر الطلب (publish)
+      publishManyOrders(to: PUBLISHED) {
+        count
+      }
+
+      # ✅ ونشر المنتجات اللي داخله (orderitems)
+      publishManyOrderitems(to: PUBLISHED) {
+        count
+      }
+
+      # ✅ ونشر التفاصيل كمان
+      publishManyOrderdetails(to: PUBLISHED) {
+        count
       }
     }
   `;
-
-  const variables = {
-    data: {
-      userName: orderData.userName,
-      email: orderData.email,
-      orderAmount: parseFloat(orderData.orderAmount),
-      address: orderData.address,
-      zipCode: orderData.zipCode,
-      phone: orderData.phone,
-      orderitems: {
-        create: itemsList.map((item) => ({
-          Orderdetails: {
-            create: {
-              name: item.name,
-              price: parseFloat(item.price),
-            },
-          },
-        })),
-      },
-    },
-  };
-
-  try {
-    const result = await client.request(createMutation, variables);
-    const orderId = result?.createOrder?.id;
-
-    console.log("✅ Order created with ID:", orderId);
-
-    // ✅ 2. بعد الإنشاء — نشر البيانات
-    const publishMutation = gql`
-      mutation PublishEverything($id: ID!) {
-        publishOrder(where: { id: $id }, to: PUBLISHED) {
-          id
-        }
-        publishManyOrderitems(to: PUBLISHED) {
-          count
-        }
-        publishManyOrderdetails(to: PUBLISHED) {
-          count
-        }
-      }
-    `;
-
-    await client.request(publishMutation, { id: orderId });
-
-    console.log("🚀 Order and related items published successfully!");
-
-    return orderId;
-  } catch (error) {
-    console.error("❌ Error creating or publishing order:", error);
-    throw error;
-  }
 };
+
+// export const createNewOrder = async (orderData, itemsList) => {
+//   // ✅ 1. أولًا: إنشاء الطلب
+//   const createMutation = gql`
+//     mutation CreateOrder($data: OrderCreateInput!) {
+//       createOrder(data: $data) {
+//         id
+//       }
+//     }
+//   `;
+
+//   const variables = {
+//     data: {
+//       userName: orderData.userName,
+//       email: orderData.email,
+//       orderAmount: parseFloat(orderData.orderAmount),
+//       address: orderData.address,
+//       zipCode: orderData.zipCode,
+//       phone: orderData.phone,
+//       orderitems: {
+//         create: itemsList.map((item) => ({
+//           Orderdetails: {
+//             create: {
+//               name: item.name,
+//               price: parseFloat(item.price),
+//             },
+//           },
+//         })),
+//       },
+//     },
+//   };
+
+//   try {
+//     const result = await client.request(createMutation, variables);
+//     const orderId = result?.createOrder?.id;
+
+//     console.log("✅ Order created with ID:", orderId);
+
+//     // ✅ 2. بعد الإنشاء — نشر البيانات
+//     const publishMutation = gql`
+//       mutation PublishEverything($id: ID!) {
+//         publishOrder(where: { id: $id }, to: PUBLISHED) {
+//           id
+//         }
+//         publishManyOrderitems(to: PUBLISHED) {
+//           count
+//         }
+//         publishManyOrderdetails(to: PUBLISHED) {
+//           count
+//         }
+//       }
+//     `;
+
+//     await client.request(publishMutation, { id: orderId });
+
+//     console.log("🚀 Order and related items published successfully!");
+
+//     return orderId;
+//   } catch (error) {
+//     console.error("❌ Error creating or publishing order:", error);
+//     throw error;
+//   }
+// };
 
 export const myOrders = async (email) => {
   const query = gql`
@@ -416,10 +416,10 @@ export const myOrders = async (email) => {
 
   try {
     const result = await client.request(query, { email });
-    console.log("✅ Orders from Hygraph:", result);
+    // console.log("✅ Orders from Hygraph:", result);
     return result;
   } catch (error) {
-    console.error("❌ Error fetching orders:", error);
+    // console.error("❌ Error fetching orders:", error);
     throw error;
   }
 };
