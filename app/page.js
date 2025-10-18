@@ -1,29 +1,20 @@
-"use client";
-
 import React, { Suspense } from "react";
-import dynamic from "next/dynamic";
-
-// ✅ نجبر الصفحة تكون ديناميكية فقط (ممنوع توليد استاتيك)
-export const dynamic = "force-dynamic";
-export const fetchCache = "force-no-store";
-export const revalidate = 0;
-
-// ✅ نمنع SSR في الكومبوننت اللي بيستخدم useSearchParams
-const CategoryList = dynamic(() => import("./_components/categoryList"), {
-  ssr: false,
-});
-const RestaurantList = dynamic(() => import("./_components/RestaurantList"), {
-  ssr: false,
-});
+import CategoryList from "./_components/categoryList";
+import RestaurantList from "./_components/RestaurantList";
 
 export default function Home() {
   return (
     <div className="container p-7">
-      <Suspense fallback={<p>Loading categories...</p>}>
+      {/* نحط CategoryList داخل Suspense لتجنب error */}
+      <Suspense
+        fallback={<p className="text-center mt-10">Loading categories...</p>}
+      >
         <CategoryList />
       </Suspense>
 
-      <Suspense fallback={<p>Loading restaurants...</p>}>
+      <Suspense
+        fallback={<p className="text-center mt-10">Loading restaurants...</p>}
+      >
         <RestaurantList />
       </Suspense>
     </div>
