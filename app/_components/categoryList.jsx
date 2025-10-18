@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState, Suspense } from "react";
 import GlobalApi from "../_utils/GlobalApi";
 import Image from "next/image";
